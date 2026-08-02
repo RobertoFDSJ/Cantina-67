@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Pedido - Cantina Digital{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Registrar Venda (Balcão)</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form action="{% url 'adicionar_via_post' %}" method="POST">
+                        {% csrf_token %}
+
+                        <!-- Cliente: Controle de Permissão -->
+                        <div class="mb-3">
+                            <label for="cliente" class="form-label fw-bold">Cliente</label>
+                            
+                            {# Verifica se o usuário pertence ao grupo de gestão #}
+                            {% if request.user.groups.all.0.name == 'Admins' or request.user.groups.all.0.name == 'Funcionarios' %}
+                                <select name="cliente" id="cliente" class="form-select" required>
+                                    <option value="" disabled selected>Selecione um cliente...</option>
+                                    {% for cliente in clientes %}
+                                        <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                {# Para clientes comuns, o campo fica travado no próprio nome #}
+                                <input type="text" class="form-control" value="{{ user.first_name|default:user.username }}" readonly>
+                                <input type="hidden" name="cliente" value="{{ user.id }}">
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <!-- Produto -->
+                            <div class="col-md-8 mb-3">
+                                <label for="produto" class="form-label fw-bold">Produto (Salgado)</label>
+                                <select name="produto" id="produto" class="form-select" required>
+                                    <option value="" disabled selected>Selecione um produto...</option>
+                                    {% for produto in produtos %}
+                                        <option value="{{ produto.id }}">{{ produto.nome }} - R$ {{ produto.preco|floatformat:2 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Quantidade -->
+                            <div class="col-md-4 mb-3">
+                                <label for="quantidade" class="form-label fw-bold">Quantidade</label>
+                                <input type="number" name="quantidade" id="quantidade" class="form-control" value="1" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                            <a href="{% url 'lista_pedidos' %}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-cart-plus"></i> Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

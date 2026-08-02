@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Início - Cantina Digital{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-4 fw-bold">Bem-vindo à nossa Cantina!</h1>
+    <p class="lead text-muted">Escolha seus salgados e monte seu pedido no carrinho.</p>
+</div>
+
+<!-- Carrossel de Destaques -->
+<div id="carouselSalgados" class="carousel slide shadow-lg rounded overflow-hidden mb-5" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        {% for salgado in salgados %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            {% if salgado.imagem %}
+                <img src="{{ salgado.imagem.url }}" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="{{ salgado.nome }}">
+            {% endif %}
+            <div class="carousel-caption d-none d-md-block" style="background: rgba(0,0,0,0.6); border-radius: 15px; padding: 20px;">
+                <h5>{{ salgado.nome }}</h5>
+                <p class="fs-4">R$ {{ salgado.preco|floatformat:2 }}</p>
+                <!-- Botão que alimenta o Buffer (Sessão/Carrinho) -->
+                <a href="{% url 'adicionar_ao_carrinho' salgado.id %}" class="btn btn-success btn-lg">
+                    <i class="bi bi-cart-plus"></i> Adicionar ao Carrinho
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="carousel-item active">
+            <div class="d-flex align-items-center justify-content-center" style="height: 400px; background: #eee;">
+                <p>Nenhum salgado disponível no momento.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselSalgados" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselSalgados" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+</div>
+
+<!-- Cardápio Completo (Grade de Produtos) -->
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+    {% for salgado in salgados %}
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            {% if salgado.imagem %}
+                <img src="{{ salgado.imagem.url }}" class="card-img-top" alt="{{ salgado.nome }}" style="height: 200px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body text-center">
+                <h5 class="card-title fw-bold">{{ salgado.nome }}</h5>
+                <p class="card-text text-success fs-5 fw-bold">R$ {{ salgado.preco|floatformat:2 }}</p>
+                <p class="text-muted small">{{ salgado.descricao|truncatechars:60 }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-0 pb-3">
+                <div class="d-grid">
+                    <!-- Link para o Carrinho (Garante o fluxo de conferência) -->
+                    <a href="{% url 'adicionar_ao_carrinho' salgado.id %}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-lg"></i> Colocar no Carrinho
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="text-center py-4 bg-white rounded shadow-sm">
+    <p class="mb-0 text-muted">Deseja um atendimento personalizado?</p>
+    <a href="/clientes/novo/" class="btn btn-link text-decoration-none">Clique aqui para atualizar seu cadastro.</a>
+</div>
+
+{% endblock %}

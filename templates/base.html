@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cantina Digital{% endblock %}</title>
+
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <img src="{% static 'img/logo.png' %}" alt="Cantina Digital" width="100" height="40" class="d-inline-block align-text-top me-2">
+                Cantina Digital
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cardapio' %}">Cardápio</a>
+                    </li>
+                    
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff or user.is_superuser or request.user.groups.all.0.name == 'Administradores' or request.user.groups.all.0.name == 'Funcionários' %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle fw-bold text-warning" href="#" id="vendasDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear-fill"></i> Gestão
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'novo_pedido' %}"><i class="bi bi-plus-lg"></i> Venda Direta (Balcão)</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'lista_pedidos' %}"><i class="bi bi-list-check"></i> Gerenciar Pedidos</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/clientes/novo/"><i class="bi bi-person-plus"></i> Cadastrar Novo Cliente</a></li>
+                                    <li><a class="dropdown-item text-primary" href="/admin/"><i class="bi bi-shield-lock"></i> Acessar Django Admin</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'novo_pedido' %}">Fazer Pedido</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'lista_pedidos' %}">Meus Pedidos</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+
+                <div class="navbar-nav align-items-center">
+                    <a class="nav-link btn btn-outline-warning text-white me-3 px-3 position-relative border-0" href="{% url 'ver_carrinho' %}">
+                        <i class="bi bi-cart4"></i>
+                        {% if request.session.carrinho %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ request.session.carrinho|length }}
+                        </span>
+                        {% endif %}
+                    </a>
+
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.first_name|default:user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li><a class="dropdown-item" href="/admin/"><i class="bi bi-lock"></i> Painel Admin</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm w-100">Sair</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a class="nav-link text-white me-3" href="/clientes/novo/">Criar Nova Conta</a>
+                        <a class="btn btn-primary btn-sm px-4" href="{% url 'login' %}">Entrar</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container my-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer class="text-center border-top py-4 mt-auto bg-white text-muted">
+    <div class="container">
+        <p class="mb-0">&copy; 2026 - Sistema de Cantina Escolar | Luiz Alberto Toledo</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/imask"></script>
+
+{% block scripts %}
+{% endblock %}
+
+</body>
+</html>

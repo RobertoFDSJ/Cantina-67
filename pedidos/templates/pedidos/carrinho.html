@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Meu Carrinho - Cantina Digital{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-cart4 text-primary"></i> Itens no Carrinho</h2>
+        <a href="{% url 'novo_pedido' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Continuar Comprando
+        </a>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Produto</th>
+                        <th class="text-center">Quantidade</th>
+                        <th class="text-end">Preço Unit.</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in itens %}
+                    <tr>
+                        <td class="fw-bold">{{ item.produto.nome }}</td>
+                        <td class="text-center">{{ item.quantidade }}</td>
+                        <td class="text-end">R$ {{ item.produto.preco|floatformat:2 }}</td>
+                        <td class="text-end fw-bold">R$ {{ item.subtotal|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <i class="bi bi-cart-x fs-1 d-block mb-3"></i>
+                            Seu carrinho está vazio. <br>
+                            <a href="/" class="btn btn-primary mt-3">Ver Cardápio de Salgados</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if itens %}
+        <div class="card-footer bg-white py-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3 class="mb-0">Total do Pedido: <span class="text-success">R$ {{ total_geral|floatformat:2 }}</span></h3>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="{% url 'limpar_carrinho' %}" class="btn btn-outline-danger me-2">
+                        <i class="bi bi-trash"></i> Esvaziar
+                    </a>
+                    <a href="{% url 'finalizar_compra' %}" class="btn btn-success btn-lg px-5 shadow">
+                        <i class="bi bi-check-circle"></i> Finalizar Compra
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

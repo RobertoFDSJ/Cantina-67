@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastro de Cliente - Cantina Digital{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 class="card-title mb-0"><i class="bi bi-person-plus"></i> Novo Cadastro de Cliente</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" id="formCadastro">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="nome" class="form-label fw-bold">Nome Completo</label>
+                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome completo" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cpf" class="form-label fw-bold">CPF</label>
+                        <input type="text" class="form-control" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                        <div class="form-text">Somente números, a formatação é automática.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="exemplo@email.com" required>
+                    </div>
+
+                    <!-- NOVO CAMPO DE SENHA -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-bold">Senha de Acesso</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Crie uma senha segura" required>
+                        <div class="form-text">Esta senha será usada para acessar sua conta.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label fw-bold">Telefone / WhatsApp</label>
+                        <input type="text" class="form-control" id="telefone" name="telefone" placeholder="(00) 00000-0000">
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle"></i> Finalizar Cadastro
+                        </button>
+                        <a href="/" class="btn btn-outline-secondary">Cancelar e Voltar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/imask"></script>
+<script>
+    const elementCpf = document.getElementById('cpf');
+    const maskOptionsCpf = {
+        mask: '000.000.000-00'
+    };
+    IMask(elementCpf, maskOptionsCpf);
+
+    const elementTel = document.getElementById('telefone');
+    const maskOptionsTel = {
+        mask: '(00) 00000-0000'
+    };
+    IMask(elementTel, maskOptionsTel);
+</script>
+{% endblock %}
