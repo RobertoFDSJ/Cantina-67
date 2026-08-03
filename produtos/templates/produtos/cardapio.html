@@ -12,11 +12,13 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for produto in produtos %}
         <div class="col">
-            <div class="card h-100 shadow-sm border-0">
+            <div class="card">
                 {% if produto.imagem %}
-                    <img src="{{ produto.imagem.url }}" 
-                    class="card-img-top imagem-produto" 
-                    alt="{{ produto.nome }}">
+                <div class="text-center pt-3">
+                    <img src="{{ produto.imagem.url }}"
+                        class="imagem-produto"
+                        alt="{{ produto.nome }}">
+                </div>
                 {% endif %}
                 <div class="card-body text-center">
                     <h5 class="card-title fw-bold">{{ produto.nome }}</h5>

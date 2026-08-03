@@ -46,7 +46,7 @@
 <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
     {% for salgado in salgados %}
     <div class="col">
-        <div class="card h-100 shadow-sm border-0">
+        <div class="card shadow-sm border-0">
             {% if salgado.imagem %}
                 <img src="{{ salgado.imagem.url }}" class="card-img-top" alt="{{ salgado.nome }}" style="height: 200px; object-fit: cover;">
             {% endif %}
